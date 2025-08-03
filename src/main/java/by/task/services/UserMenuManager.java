@@ -1,6 +1,5 @@
 package by.task.services;
 
-import by.task.dao.Dao;
 import by.task.models.User;
 
 import java.util.List;
@@ -9,12 +8,12 @@ import java.util.Scanner;
 
 public class UserMenuManager {
     private final Scanner scanner;
-    private final Dao<User, Long> userDao;
+    private final UserService userService;
     private boolean running = true;
 
-    public UserMenuManager(Scanner scanner, Dao<User, Long> userDao) {
+    public UserMenuManager(Scanner scanner, UserService userService) {
         this.scanner = scanner;
-        this.userDao = userDao;
+        this.userService = userService;
     }
 
     public void run() {
@@ -68,7 +67,7 @@ public class UserMenuManager {
         int age = getIntInput();
 
         User user = new User(name, email, age);
-        userDao.save(user);
+        userService.saveUser(user);
         System.out.println("Пользователь создан: " + user);
     }
 
@@ -76,7 +75,7 @@ public class UserMenuManager {
         System.out.print("Введите ID пользователя: ");
         Long id = getLongInput();
 
-        Optional<User> user = userDao.findById(id);
+        Optional<User> user = userService.getUserById(id);
         user.ifPresentOrElse(
                 u -> System.out.println("Найден пользователь: " + u),
                 () -> System.out.println("Пользователь с ID " + id + " не найден")
@@ -84,7 +83,7 @@ public class UserMenuManager {
     }
 
     private void findAllUsers() {
-        List<User> users = userDao.findAll();
+        List<User> users = userService.getAllUsers();
         if (users.isEmpty()) {
             System.out.println("Список пользователей пуст");
         } else {
@@ -97,7 +96,7 @@ public class UserMenuManager {
         System.out.print("Введите ID пользователя для обновления: ");
         Long id = getLongInput();
 
-        Optional<User> optionalUser = userDao.findById(id);
+        Optional<User> optionalUser = userService.getUserById(id);
         if (optionalUser.isEmpty()) {
             System.out.println("Пользователь не найден");
             return;
@@ -118,7 +117,7 @@ public class UserMenuManager {
         int age = getIntInput();
         if (age > 0) user.setAge(age);
 
-        userDao.update(user);
+        userService.updateUser(user);
         System.out.println("Данные пользователя обновлены: " + user);
     }
 
@@ -126,10 +125,10 @@ public class UserMenuManager {
         System.out.print("Введите ID пользователя для удаления: ");
         Long id = getLongInput();
 
-        Optional<User> user = userDao.findById(id);
+        Optional<User> user = userService.getUserById(id);
         user.ifPresentOrElse(
                 u -> {
-                    userDao.delete(u);
+                    userService.deleteUser(u);
                     System.out.println("Пользователь удалён: " + u);
                 },
                 () -> System.out.println("Пользователь с ID " + id + " не найден")
