@@ -9,11 +9,11 @@ import by.task.util.HibernateUtil;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Dao<User, Long> userDao = new UserDao();
-        UserMenuManager menuManager = new UserMenuManager(scanner, userDao);
+    private static final Scanner scanner = new Scanner(System.in);
+    private static final Dao<User, Long> userDao = new UserDao();
+    private static final UserMenuManager menuManager = new UserMenuManager(scanner, userDao);
 
+    public static void main(String[] args) {
         menuManager.run();
         HibernateUtil.shutdown();
     }
