@@ -1,5 +1,6 @@
 package by.task.services;
 
+import by.task.exceptions.dao.DaoException;
 import by.task.models.User;
 
 import java.util.List;
@@ -18,17 +19,21 @@ public class UserMenuManager {
 
     public void run() {
         while (running) {
-            printMenu();
-            int choice = getIntInput();
+            try {
+                printMenu();
+                int choice = getIntInput();
 
-            switch (choice) {
-                case 1 -> createUser();
-                case 2 -> findUserById();
-                case 3 -> findAllUsers();
-                case 4 -> updateUser();
-                case 5 -> deleteUser();
-                case 0 -> running = false;
-                default -> System.out.println("Неверный выбор, попробуйте снова.");
+                switch (choice) {
+                    case 1 -> createUser();
+                    case 2 -> findUserById();
+                    case 3 -> findAllUsers();
+                    case 4 -> updateUser();
+                    case 5 -> deleteUser();
+                    case 0 -> running = false;
+                    default -> System.out.println("Неверный выбор, попробуйте снова.");
+                }
+            } catch (DaoException e) {
+                System.out.println(e.getMessage());
             }
         }
     }
