@@ -1,6 +1,8 @@
 package by.task.dao.impl;
 
 import by.task.dao.Dao;
+import by.task.exceptions.dao.UserPersistenceException;
+import by.task.exceptions.dao.UserQueryException;
 import by.task.models.User;
 import by.task.util.HibernateUtil;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -20,7 +22,7 @@ public class UserDao implements Dao<User, Long> {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException("Ошибка при сохранении пользователя", e);
+            throw new UserPersistenceException("Ошибка при сохранении пользователя", e);
         }
     }
 
@@ -29,7 +31,7 @@ public class UserDao implements Dao<User, Long> {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return Optional.ofNullable(session.find(User.class, id));
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при поиске пользователя по ID: " + id, e);
+            throw new UserQueryException("Ошибка при поиске пользователя по ID: " + id, e);
         }
     }
 
@@ -40,7 +42,7 @@ public class UserDao implements Dao<User, Long> {
             cq.from(User.class);
             return session.createQuery(cq).getResultList();
         } catch (Exception e) {
-            throw new RuntimeException("Ошибка при получении списка пользователей", e);
+            throw new UserQueryException("Ошибка при получении списка пользователей", e);
         }
     }
 
@@ -53,7 +55,7 @@ public class UserDao implements Dao<User, Long> {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException("Ошибка при обновлении пользователя", e);
+            throw new UserPersistenceException("Ошибка при обновлении пользователя", e);
         }
     }
 
@@ -66,7 +68,7 @@ public class UserDao implements Dao<User, Long> {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) transaction.rollback();
-            throw new RuntimeException("Ошибка при удалении пользователя", e);
+            throw new UserPersistenceException("Ошибка при удалении пользователя", e);
         }
     }
 }
