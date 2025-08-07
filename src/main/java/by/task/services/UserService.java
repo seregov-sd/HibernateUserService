@@ -6,6 +6,7 @@ import by.task.exceptions.services.EmptyUserListException;
 import by.task.exceptions.services.InvalidUserException;
 import by.task.exceptions.services.UserNotFoundException;
 import by.task.models.User;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -52,7 +53,7 @@ public class UserService {
         if (user == null) {
             throw new InvalidUserException("Пользователь не может быть null");
         }
-        if (user.getName() == null || user.getName().trim().isEmpty()) {
+        if (StringUtils.isBlank(user.getName())) {
             throw new InvalidUserException("Имя пользователя обязательно");
         }
     }
