@@ -6,6 +6,10 @@ import org.hibernate.cfg.Configuration;
 public class HibernateUtil {
     private static final SessionFactory sessionFactory = buildSessionFactory();
 
+    private HibernateUtil() {
+        throw new UnsupportedOperationException("Это утилитарный класс, экземпляры создавать нельзя!");
+    }
+
     private static SessionFactory buildSessionFactory() {
         try {
             Configuration configuration = new Configuration();
