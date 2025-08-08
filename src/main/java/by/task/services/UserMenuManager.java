@@ -32,7 +32,7 @@ public class UserMenuManager {
                     case 0 -> running = false;
                     default -> System.out.println("Неверный выбор, попробуйте снова.");
                 }
-            } catch (DaoException e) {
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
         }
