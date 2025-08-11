@@ -7,16 +7,27 @@ import by.task.models.User;
 import by.task.util.HibernateUtil;
 import jakarta.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.util.List;
 import java.util.Optional;
 
 public class UserDao implements Dao<User, Long> {
+    private final SessionFactory sessionFactory;
+
+    public UserDao() {
+        this(HibernateUtil.getSessionFactory());
+    }
+
+    public UserDao(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
+
     @Override
     public void save(User user) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.persist(user);
             transaction.commit();
@@ -28,7 +39,7 @@ public class UserDao implements Dao<User, Long> {
 
     @Override
     public Optional<User> findById(Long id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             return Optional.ofNullable(session.find(User.class, id));
         } catch (Exception e) {
             throw new UserQueryException("Ошибка при поиске пользователя по ID: " + id, e);
@@ -37,7 +48,7 @@ public class UserDao implements Dao<User, Long> {
 
     @Override
     public List<User> findAll() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             CriteriaQuery<User> cq = session.getCriteriaBuilder().createQuery(User.class);
             cq.from(User.class);
             return session.createQuery(cq).getResultList();
@@ -49,7 +60,7 @@ public class UserDao implements Dao<User, Long> {
     @Override
     public void update(User user) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.merge(user);
             transaction.commit();
@@ -62,7 +73,7 @@ public class UserDao implements Dao<User, Long> {
     @Override
     public void delete(User user) {
         Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.remove(user);
             transaction.commit();
