@@ -12,7 +12,15 @@ import java.util.List;
 import java.util.Optional;
 
 public class UserService {
-    private final Dao<User, Long> userDao = new UserDao();
+    private final Dao<User, Long> userDao;
+
+    public UserService() {
+        this.userDao = new UserDao();
+    }
+
+    public UserService(Dao<User, Long> userDao) {
+        this.userDao = userDao;
+    }
 
     public void saveUser(User user) {
         validateUser(user);
