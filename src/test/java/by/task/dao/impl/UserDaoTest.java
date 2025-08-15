@@ -23,6 +23,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestInstance(Lifecycle.PER_CLASS)
 class UserDaoTest {
+    private static final String TEST_NAME = "Test User";
+    private static final String ALT_NAME = "Alt User";
+    private static final String TEST_EMAIL = "user@test.com";
+    private static final String ALT_EMAIL = "alt@test.com";
+    private static final int TEST_AGE = 30;
+    private static final int ALT_AGE = 20;
+
     private SessionFactory sessionFactory;
     private Dao<User, Long> userDao;
 
@@ -49,22 +56,22 @@ class UserDaoTest {
 
     @Test
     void shouldSaveUserAndRetrieveItById_WhenUserIsValid() {
-        User user = new User("Test User", "user@test.com", 30);
+        User user = new User(TEST_NAME, TEST_EMAIL, TEST_AGE);
 
         userDao.save(user);
         Optional<User> found = userDao.findById(user.getId());
 
         assertTrue(found.isPresent());
-        assertEquals("Test User", found.get().getName());
-        assertEquals("user@test.com", found.get().getEmail());
-        assertEquals(30, found.get().getAge());
+        assertEquals(TEST_NAME, found.get().getName());
+        assertEquals(TEST_EMAIL, found.get().getEmail());
+        assertEquals(TEST_AGE, found.get().getAge());
         assertNotNull(found.get().getCreatedAt());
     }
 
     @Test
     void shouldReturnAllUsers_WhenMultipleUsersExist() {
-        User user1 = new User("User1", "user1@test.com", 20);
-        User user2 = new User("User2", "user2@test.com", 30);
+        User user1 = new User(TEST_NAME, TEST_EMAIL, TEST_AGE);
+        User user2 = new User(ALT_NAME, ALT_EMAIL, ALT_AGE);
 
         userDao.save(user1);
         userDao.save(user2);
@@ -75,25 +82,25 @@ class UserDaoTest {
 
     @Test
     void shouldUpdateUserDetails_WhenNewValuesAreValid() {
-        User user = new User("Original", "original@test.com", 20);
+        User user = new User(TEST_NAME, TEST_EMAIL, TEST_AGE);
         userDao.save(user);
 
-        user.setName("Updated");
-        user.setEmail("update@test.com");
-        user.setAge(25);
+        user.setName(ALT_NAME);
+        user.setEmail(ALT_EMAIL);
+        user.setAge(ALT_AGE);
 
         userDao.update(user);
 
         Optional<User> updated = userDao.findById(user.getId());
         assertTrue(updated.isPresent());
-        assertEquals("Updated", updated.get().getName());
-        assertEquals("update@test.com", updated.get().getEmail());
-        assertEquals(25, updated.get().getAge());
+        assertEquals(ALT_NAME, updated.get().getName());
+        assertEquals(ALT_EMAIL, updated.get().getEmail());
+        assertEquals(ALT_AGE, updated.get().getAge());
     }
 
     @Test
     void shouldDeleteUser_WhenUserExists() {
-        User user = new User("ToDelete", "delete@test.com", 40);
+        User user = new User(TEST_NAME, TEST_EMAIL, TEST_AGE);
         userDao.save(user);
 
         assertTrue(userDao.findById(user.getId()).isPresent());
@@ -112,7 +119,7 @@ class UserDaoTest {
     @Test
     void shouldSetCreatedAtAutomatically_WhenNewUserIsSaved() {
         LocalDateTime beforeTest = LocalDateTime.now().minusSeconds(1);
-        User user = new User("Timestamp", "timestamp@test.com", 35);
+        User user = new User(TEST_NAME, TEST_EMAIL, TEST_AGE);
 
         userDao.save(user);
         Optional<User> found = userDao.findById(user.getId());
